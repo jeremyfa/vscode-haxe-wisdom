@@ -61,7 +61,7 @@
                     "begin": ">",
                     "end": "(?=</if>)",
                     "patterns": [{
-                        "begin": "(<)(else\\s+if|else)\\b",
+                        "begin": "(<)(elseif|else)\\b",
                         "end": "(/?>)",
                         "name": "tag.open.control.else.hx",
                         "beginCaptures": {
