@@ -1,0 +1,354 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "fileTypes": ["hx"],
+    "scopeName": "source.hx.wisdom",
+    "injectionSelector": "L:meta.method.block.hx-comment, L:meta.block.hx -comment",
+    "patterns": [{
+        "include": "#wisdom"
+    }],
+    "repository": {
+        "wisdom": {
+            "patterns": [{
+                "begin": "(')(<>)",
+                "beginCaptures": {
+                    "1": { "name": "punctuation.definition.comment.hx" },
+                    "2": { "name": "punctuation.definition.comment.hx" }
+                },
+                "end": "(';?)",
+                "endCaptures": {
+                    "1": { "name": "punctuation.definition.comment.hx" }
+                },
+                "name": "meta.wisdom.hx",
+                "patterns": [{
+                    "match": "\\.",
+                    "name": "constant.character.escape.hx"
+                }, {
+                    "include": "#wisdom-in-single-quoted"
+                }]
+            }]
+        },
+        "wisdom-in-single-quoted": {
+            "name": "meta.wisdom.hx",
+            "patterns": [{
+                "include": "#haxe-string-interpolation"
+            }, {
+                "include": "#wisdom-tag-open-in-single-quoted"
+            }, {
+                "include": "#wisdom-tag-close"
+            }, {
+                "include": "#wisdom-tag-invalid"
+            }, {
+                "include": "#wisdom-comments"
+            }]
+        },
+        "wisdom-tag-open-in-single-quoted": {
+            "patterns": [{
+                "begin": "(<)(if)\\b",
+                "end": "(</)(if)(>)",
+                "name": "tag.open.control.if.hx",
+                "beginCaptures": {
+                    "1": { "name": "punctuation.definition.tag.begin.hx" },
+                    "2": { "name": "keyword.control.flow.hx" }
+                },
+                "endCaptures": {
+                    "1": { "name": "punctuation.definition.tag.begin.hx" },
+                    "2": { "name": "keyword.control.flow.hx" },
+                    "3": { "name": "punctuation.definition.tag.end.hx" }
+                },
+                "patterns": [{
+                    "include": "#wisdom-control-attributes"
+                }, {
+                    "begin": ">",
+                    "end": "(?=</if>)",
+                    "patterns": [{
+                        "begin": "(<)(else\\s+if|else)\\b",
+                        "end": "(/?>)",
+                        "name": "tag.open.control.else.hx",
+                        "beginCaptures": {
+                            "1": { "name": "punctuation.definition.tag.begin.hx" },
+                            "2": { "name": "keyword.control.flow.hx" }
+                        },
+                        "endCaptures": {
+                            "1": { "name": "punctuation.definition.tag.end.hx" }
+                        },
+                        "patterns": [{
+                            "include": "#wisdom-control-attributes"
+                        }]
+                    }, {
+                        "include": "#wisdom-in-single-quoted"
+                    }]
+                }]
+            }, {
+                "begin": "(<)(switch)\\b",
+                "end": "(</)(switch)(>)",
+                "name": "tag.open.control.switch.hx",
+                "beginCaptures": {
+                    "1": { "name": "punctuation.definition.tag.begin.hx" },
+                    "2": { "name": "keyword.control.flow.hx" }
+                },
+                "endCaptures": {
+                    "1": { "name": "punctuation.definition.tag.begin.hx" },
+                    "2": { "name": "keyword.control.flow.hx" },
+                    "3": { "name": "punctuation.definition.tag.end.hx" }
+                },
+                "patterns": [{
+                    "include": "#wisdom-control-attributes"
+                }, {
+                    "begin": ">",
+                    "end": "(?=</switch>)",
+                    "patterns": [{
+                        "begin": "(<)(case)\\b",
+                        "end": "(/?>)",
+                        "name": "tag.open.control.case.hx",
+                        "beginCaptures": {
+                            "1": { "name": "punctuation.definition.tag.begin.hx" },
+                            "2": { "name": "keyword.control.flow.hx" }
+                        },
+                        "endCaptures": {
+                            "1": { "name": "punctuation.definition.tag.end.hx" }
+                        },
+                        "patterns": [{
+                            "include": "#wisdom-control-attributes"
+                        }]
+                    }, {
+                        "match": "(</)(case)\\b(>)",
+                        "name": "tag.closed.control.case.hx",
+                        "captures": {
+                            "1": { "name": "punctuation.definition.tag.begin.hx" },
+                            "2": { "name": "keyword.control.flow.hx" },
+                            "3": { "name": "punctuation.definition.tag.end.hx" }
+                        }
+                    }, {
+                        "include": "#wisdom-in-single-quoted"
+                    }]
+                }]
+            }, {
+                "begin": "(<)(foreach)\\b",
+                "end": "(/?>)",
+                "name": "tag.open.control.hx",
+                "beginCaptures": {
+                    "1": { "name": "punctuation.definition.tag.begin.hx" },
+                    "2": { "name": "keyword.control.flow.hx" }
+                },
+                "endCaptures": {
+                    "1": { "name": "punctuation.definition.tag.end.hx" }
+                },
+                "patterns": [{
+                    "include": "#wisdom-control-attributes"
+                }]
+            }, {
+                "begin": "(<)(key)\\b",
+                "end": "(/?>)",
+                "name": "tag.open.control.key.hx",
+                "beginCaptures": {
+                    "1": { "name": "punctuation.definition.tag.begin.hx" },
+                    "2": { "name": "keyword.control.flow.hx" }
+                },
+                "endCaptures": {
+                    "1": { "name": "punctuation.definition.tag.end.hx" }
+                },
+                "patterns": [{
+                    "include": "#wisdom-control-attributes"
+                }]
+            }, {
+                "begin": "(<)([A-Z][a-zA-Z0-9\\.:$_]*)\\b",
+                "end": "(/?>)",
+                "name": "tag.open.component.hx",
+                "beginCaptures": {
+                    "1": { "name": "punctuation.definition.tag.begin.hx" },
+                    "2": { "name": "support.class.hx" }
+                },
+                "endCaptures": {
+                    "1": { "name": "punctuation.definition.tag.end.hx" }
+                },
+                "patterns": [{
+                    "include": "#wisdom-tag-attributes-in-single-quoted"
+                }]
+            }, {
+                "begin": "(<)([a-z][a-zA-Z0-9\\.:$_]*)\\b",
+                "end": "(/?>)",
+                "name": "tag.open.hx",
+                "beginCaptures": {
+                    "1": { "name": "punctuation.definition.tag.begin.hx" },
+                    "2": { "name": "entity.name.tag.hx" }
+                },
+                "endCaptures": {
+                    "1": { "name": "punctuation.definition.tag.end.hx" }
+                },
+                "patterns": [{
+                    "include": "#wisdom-tag-attributes-in-single-quoted"
+                }]
+            }]
+        },
+        "wisdom-control-attributes": {
+            "patterns": [{
+                "include": "#haxe-string-interpolation"
+            }, {
+                "match": "\\b_\\b",
+                "name": "keyword.control.flow.hx"
+            }, {
+                "include": "#wisdom-tag-attributes-in-single-quoted"
+            }]
+        },
+        "wisdom-tag-close": {
+            "patterns": [{
+                "match": "(</)([A-Z][a-zA-Z0-9\\.:$_]*)(>)",
+                "name": "tag.closed.component.hx",
+                "captures": {
+                    "1": { "name": "punctuation.definition.tag.begin.hx" },
+                    "2": { "name": "support.class.hx" },
+                    "3": { "name": "punctuation.definition.tag.end.hx" }
+                }
+            }, {
+                "match": "(</)(if)\\b(>)",
+                "name": "tag.closed.control.hx",
+                "captures": {
+                    "1": { "name": "punctuation.definition.tag.begin.hx" },
+                    "2": { "name": "keyword.control.flow.hx" },
+                    "3": { "name": "punctuation.definition.tag.end.hx" }
+                }
+            }, {
+                "match": "(</)([a-z][a-zA-Z0-9\\.:$_]*)(>)",
+                "name": "tag.closed.hx",
+                "captures": {
+                    "1": { "name": "punctuation.definition.tag.begin.hx" },
+                    "2": { "name": "entity.name.tag.hx" },
+                    "3": { "name": "punctuation.definition.tag.end.hx" }
+                }
+            }]
+        },
+        "wisdom-tag-invalid": {
+            "name": "invalid.illegal.tag.incomplete.hx",
+            "match": "<\\s*>"
+        },
+        "wisdom-comments": {
+            "begin": "<[!%]--",
+            "captures": {
+                "0": { "name": "punctuation.definition.comment.xml" }
+            },
+            "end": "--%?>",
+            "name": "comment.block.xml"
+        },
+        "wisdom-tag-attributes-in-single-quoted": {
+            "patterns": [{
+                "include": "#haxe-string-interpolation"
+            },{
+                "include": "#wisdom-tag-attribute-name"
+            },{
+                "include": "#wisdom-string-double-quoted"
+            },{
+                "include": "#wisdom-string-single-quoted-escaped"
+            },{
+                "include": "#wisdom-evaluated-code"
+            }]
+        },
+        "wisdom-tag-attribute-name": {
+            "name": "meta.tag.attribute-name.hx",
+            "match": "(?:\\$[a-zA-Z0-9\\-:]+|\\b([a-zA-Z0-9\\-:]+))",
+            "captures": {
+                "1": {
+                    "patterns": [{
+                        "match": "key",
+                        "name": "keyword.control.key.hx"
+                    }, {
+                        "match": "if|unless",
+                        "name": "keyword.control.conditional.hx"
+                    }, {
+                        "match": "[a-zA-Z0-9\\-:]+",
+                        "name": "entity.other.attribute-name.haxe"
+                    }]
+                }
+            }
+        },
+        "wisdom-string-double-quoted": {
+            "begin": "\"",
+            "end": "\"",
+            "name": "string.quoted.double.hx",
+            "beginCaptures": {
+                "0": { "name": "punctuation.definition.string.begin.hx" }
+            },
+            "endCaptures": {
+                "0": { "name": "punctuation.definition.string.end.hx" }
+            },
+            "patterns": [{
+                "include": "#haxe-string-interpolation"
+            },{
+                "include": "#wisdom-entities"
+            }]
+        },
+        "wisdom-string-single-quoted-escaped": {
+            "begin": "\\'",
+            "end": "\\'",
+            "name": "string.quoted.single.haxe",
+            "beginCaptures": {
+                "0": { "name": "punctuation.definition.string.escaped.begin.hx" }
+            },
+            "endCaptures": {
+                "0": { "name": "punctuation.definition.string.escaped.end.hx" }
+            },
+            "patterns": [{
+                "include": "#wisdom-entities"
+            }]
+        },
+        "wisdom-entities": {
+            "patterns": [{
+                "name": "constant.character.entity.hx",
+                "match": "(&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)",
+                "captures": {
+                    "1": { "name": "punctuation.definition.entity.hx" },
+                    "3": { "name": "punctuation.definition.entity.hx" }
+                }
+            }, {
+                "name": "invalid.illegal.bad-ampersand.hx",
+                "match": "&"
+            }]
+        },
+        "wisdom-evaluated-code": {
+            "begin": "{",
+            "end": "}",
+            "name": "meta.brace.curly.hx",
+            "endCaptures": {
+                "0": { "name": "punctuation.definition.brace.curly.start.hx" }
+            },
+            "beginCaptures": {
+                "0": { "name": "punctuation.definition.brace.curly.end.hx" }
+            },
+            "patterns": [{
+                "include": "$self"
+            }]
+        },
+        "haxe-string-interpolation": {
+            "patterns": [{
+                "begin": "\\$(?=\\$)",
+                "beginCaptures": {
+                    "0": { "name": "constant.character.escape.hx" }
+                },
+                "end": "\\$",
+                "endCaptures": {
+                    "0": { "name": "constant.character.escape.hx" }
+                },
+                "name": "string.quoted.single.hx"
+            }, {
+                "include": "source.hx#string-escape-sequences"
+            }, {
+                "begin": "(\\${)",
+                "beginCaptures": {
+                    "0": { "name": "punctuation.definition.block.begin.hx" }
+                },
+                "end": "(})",
+                "endCaptures": {
+                    "0": { "name": "punctuation.definition.block.end.hx" }
+                },
+                "patterns": [{
+                    "include": "source.hx#block-contents"
+                }]
+            }, {
+                "match": "(\\$)([_a-zA-Z]\\w*)",
+                "captures": {
+                    "1": { "name": "punctuation.definition.block.begin.hx" },
+                    "2": { "name": "variable.other.hx" }
+                }
+            }]
+        }
+    }
+}
