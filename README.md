@@ -1,4 +1,4 @@
-# Haxe Wisdom syntax highlighting for Visual Studio Code
+# Haxe Wisdom library syntax highlighting for Visual Studio Code
 
 This extension adds wisdom colorization support for the syntax used by [wisdom](https://github.com/jeremyfa/wisdom) haxe library.
 
