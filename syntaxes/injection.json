@@ -261,19 +261,23 @@
             }
         },
         "wisdom-string-double-quoted": {
-            "begin": "\"",
-            "end": "\"",
-            "name": "string.quoted.double.hx",
+            "begin": "(\")",
+            "end": "(\")",
             "beginCaptures": {
-                "0": { "name": "punctuation.definition.string.begin.hx" }
+                "0": { "name": "string.quoted.double.hx" },
+                "1": { "name": "punctuation.definition.string.begin.hx" }
             },
             "endCaptures": {
-                "0": { "name": "punctuation.definition.string.end.hx" }
+                "0": { "name": "string.quoted.double.hx" },
+                "1": { "name": "punctuation.definition.string.end.hx" }
             },
             "patterns": [{
                 "include": "#haxe-string-interpolation"
             },{
                 "include": "#wisdom-entities"
+            },{
+                "match": ".",
+                "name": "string.quoted.double.haxe"
             }]
         },
         "wisdom-string-single-quoted-escaped": {
