@@ -2,7 +2,7 @@
     "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
     "fileTypes": ["hx"],
     "scopeName": "source.hx.wisdom",
-    "injectionSelector": "L:meta.method.block.hx-comment, L:meta.block.hx -comment",
+    "injectionSelector": "L:meta.method.block.hx -comment, L:meta.block.hx -comment",
     "patterns": [{
         "include": "#wisdom"
     }],
@@ -30,7 +30,7 @@
         "wisdom-in-single-quoted": {
             "name": "meta.wisdom.hx",
             "patterns": [{
-                "include": "#haxe-string-interpolation"
+                "include": "#wisdom-haxe-string-interpolation"
             }, {
                 "include": "#wisdom-tag-open-in-single-quoted"
             }, {
@@ -39,6 +39,10 @@
                 "include": "#wisdom-tag-invalid"
             }, {
                 "include": "#wisdom-comments"
+            }, {
+                "include": "#wisdom-haxe-line-comments"
+            }, {
+                "include": "#wisdom-haxe-block-comments"
             }]
         },
         "wisdom-tag-open-in-single-quoted": {
@@ -56,6 +60,10 @@
                     "3": { "name": "punctuation.definition.tag.end.hx" }
                 },
                 "patterns": [{
+                    "include": "#wisdom-haxe-line-comments"
+                }, {
+                    "include": "#wisdom-haxe-block-comments"
+                }, {
                     "include": "#wisdom-control-attributes"
                 }, {
                     "begin": ">",
@@ -72,6 +80,10 @@
                             "1": { "name": "punctuation.definition.tag.end.hx" }
                         },
                         "patterns": [{
+                            "include": "#wisdom-haxe-line-comments"
+                        }, {
+                            "include": "#wisdom-haxe-block-comments"
+                        }, {
                             "include": "#wisdom-control-attributes"
                         }]
                     }, {
@@ -92,12 +104,16 @@
                     "3": { "name": "punctuation.definition.tag.end.hx" }
                 },
                 "patterns": [{
+                    "include": "#wisdom-haxe-line-comments"
+                }, {
+                    "include": "#wisdom-haxe-block-comments"
+                }, {
                     "include": "#wisdom-control-attributes"
                 }, {
                     "begin": ">",
                     "end": "(?=</switch>)",
                     "patterns": [{
-                        "begin": "(<)(case)\\b",
+                        "begin": "(<)(case|default)\\b",
                         "end": "(/?>)",
                         "name": "tag.open.control.case.hx",
                         "beginCaptures": {
@@ -108,10 +124,14 @@
                             "1": { "name": "punctuation.definition.tag.end.hx" }
                         },
                         "patterns": [{
+                            "include": "#wisdom-haxe-line-comments"
+                        }, {
+                            "include": "#wisdom-haxe-block-comments"
+                        }, {
                             "include": "#wisdom-control-attributes"
                         }]
                     }, {
-                        "match": "(</)(case)\\b(>)",
+                        "match": "(</)(case|default)\\b(>)",
                         "name": "tag.closed.control.case.hx",
                         "captures": {
                             "1": { "name": "punctuation.definition.tag.begin.hx" },
@@ -134,6 +154,10 @@
                     "1": { "name": "punctuation.definition.tag.end.hx" }
                 },
                 "patterns": [{
+                    "include": "#wisdom-haxe-line-comments"
+                }, {
+                    "include": "#wisdom-haxe-block-comments"
+                }, {
                     "include": "#wisdom-control-attributes"
                 }]
             }, {
@@ -148,6 +172,10 @@
                     "1": { "name": "punctuation.definition.tag.end.hx" }
                 },
                 "patterns": [{
+                    "include": "#wisdom-haxe-line-comments"
+                }, {
+                    "include": "#wisdom-haxe-block-comments"
+                }, {
                     "include": "#wisdom-control-attributes"
                 }]
             }, {
@@ -162,6 +190,10 @@
                     "1": { "name": "punctuation.definition.tag.end.hx" }
                 },
                 "patterns": [{
+                    "include": "#wisdom-haxe-line-comments"
+                }, {
+                    "include": "#wisdom-haxe-block-comments"
+                }, {
                     "include": "#wisdom-tag-attributes-in-single-quoted"
                 }]
             }, {
@@ -176,16 +208,20 @@
                     "1": { "name": "punctuation.definition.tag.end.hx" }
                 },
                 "patterns": [{
+                    "include": "#wisdom-haxe-line-comments"
+                }, {
+                    "include": "#wisdom-haxe-block-comments"
+                }, {
                     "include": "#wisdom-tag-attributes-in-single-quoted"
                 }]
             }]
         },
         "wisdom-control-attributes": {
             "patterns": [{
-                "include": "#haxe-string-interpolation"
+                "include": "#wisdom-haxe-string-interpolation"
             }, {
                 "match": "\\b_\\b",
-                "name": "keyword.control.flow.hx"
+                "name": "variable.other.hx"
             }, {
                 "include": "#wisdom-tag-attributes-in-single-quoted"
             }]
@@ -231,7 +267,11 @@
         },
         "wisdom-tag-attributes-in-single-quoted": {
             "patterns": [{
-                "include": "#haxe-string-interpolation"
+                "include": "#wisdom-haxe-line-comments"
+            },{
+                "include": "#wisdom-haxe-block-comments"
+            },{
+                "include": "#wisdom-haxe-string-interpolation"
             },{
                 "include": "#wisdom-tag-attribute-name"
             },{
@@ -244,7 +284,7 @@
         },
         "wisdom-tag-attribute-name": {
             "name": "meta.tag.attribute-name.hx",
-            "match": "(?:\\$[a-zA-Z0-9\\-:]+|\\b([a-zA-Z0-9\\-:]+))",
+            "match": "(?:\\$[a-zA-Z0-9_\\-:]+|\\b([a-zA-Z0-9_\\-:]+))",
             "captures": {
                 "1": {
                     "patterns": [{
@@ -254,7 +294,7 @@
                         "match": "if|unless",
                         "name": "keyword.control.conditional.hx"
                     }, {
-                        "match": "[a-zA-Z0-9\\-:]+",
+                        "match": "[a-zA-Z0-9_\\-:]+",
                         "name": "entity.other.attribute-name.haxe"
                     }]
                 }
@@ -272,7 +312,7 @@
                 "1": { "name": "punctuation.definition.string.end.hx" }
             },
             "patterns": [{
-                "include": "#haxe-string-interpolation"
+                "include": "#wisdom-haxe-string-interpolation"
             },{
                 "include": "#wisdom-entities"
             },{
@@ -321,7 +361,7 @@
                 "include": "$self"
             }]
         },
-        "haxe-string-interpolation": {
+        "wisdom-haxe-string-interpolation": {
             "patterns": [{
                 "begin": "\\$(?=\\$)",
                 "beginCaptures": {
@@ -352,6 +392,59 @@
                     "1": { "name": "punctuation.definition.block.begin.hx" },
                     "2": { "name": "variable.other.hx" }
                 }
+            }]
+        },
+        "wisdom-haxe-line-comments": {
+            "match": "//.*$",
+            "name": "comment.line.double-slash.hx",
+            "patterns": [{
+                "include": "#wisdom-haxe-string-interpolation"
+            }]
+        },
+        "wisdom-haxe-line-comments-with-interpolation": {
+            "begin": "//",
+            "beginCaptures": {
+                "0": { "name": "comment.line.double-slash.hx" }
+            },
+            "end": "\n",
+            "endCaptures": {
+                "0": { "name": "comment.line.double-slash.hx" }
+            },
+            "patterns": [{
+                "include": "#wisdom-haxe-string-interpolation"
+            },{
+                "match": ".",
+                "name": "comment.line.double-slash.hx"
+            }]
+        },
+        "wisdom-haxe-block-comments": {
+            "begin": "/\\*",
+            "beginCaptures": {
+                "0": { "name": "comment.block.hx" }
+            },
+            "end": "\\*/",
+            "endCaptures": {
+                "0": { "name": "comment.block.hx" }
+            },
+            "patterns": [{
+                "match": ".",
+                "name": "comment.block.hx"
+            }]
+        },
+        "wisdom-haxe-block-comments-with-interpolation": {
+            "begin": "/\\*",
+            "beginCaptures": {
+                "0": { "name": "comment.block.hx" }
+            },
+            "end": "\\*/",
+            "endCaptures": {
+                "0": { "name": "comment.block.hx" }
+            },
+            "patterns": [{
+                "include": "#wisdom-haxe-string-interpolation"
+            },{
+                "match": ".",
+                "name": "comment.block.hx"
             }]
         }
     }
