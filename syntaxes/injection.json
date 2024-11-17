@@ -110,7 +110,10 @@
                 }, {
                     "include": "#wisdom-control-attributes"
                 }, {
-                    "begin": ">",
+                    "begin": "(>)",
+                    "beginCaptures": {
+                        "1": { "name": "punctuation.definition.tag.end.hx" }
+                    },
                     "end": "(?=</switch>)",
                     "patterns": [{
                         "begin": "(<)(case|default)\\b",
