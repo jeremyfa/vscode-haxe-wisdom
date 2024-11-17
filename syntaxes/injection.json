@@ -182,12 +182,16 @@
                     "include": "#wisdom-control-attributes"
                 }]
             }, {
-                "begin": "(<)([A-Z][a-zA-Z0-9\\.:$_]*)\\b",
+                "begin": "(<)((?:[a-z][a-zA-Z0-9_]*\\.)*)?(?:(?:([A-Z][a-zA-Z0-9_]*)(\\.))*)?([A-Z][a-zA-Z0-9_]*)\\b",
                 "end": "(/?>)",
                 "name": "tag.open.component.hx",
                 "beginCaptures": {
                     "1": { "name": "punctuation.definition.tag.begin.hx" },
-                    "2": { "name": "support.class.hx" }
+                    "2": { "name": "support.package.hx" },
+                    "3": { "name": "support.class.hx" },
+                    "4": { "name": "support.package.hx" },
+                    "5": { "name": "support.class.hx" },
+                    "6": { "name": "support.class.hx" }
                 },
                 "endCaptures": {
                     "1": { "name": "punctuation.definition.tag.end.hx" }
