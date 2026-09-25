@@ -1,0 +1,42 @@
+-cp src
+-lib vscode
+-lib tracker
+-lib hxnodejs
+-js vscode-wisdom.js
+-D js-source-map
+VscodeWisdom
+
+--next
+
+-cp src
+-lib vscode
+-lib tracker
+-lib hxnodejs
+-lib wisdom
+-js wisdom-server.js
+-D js-source-map
+--main WisdomServer
+
+--next
+
+-cp src
+--main PatchOutput
+--interp
+
+--next
+
+# Checks the markup scanner: targeted cursor-context cases, plus a sweep of
+# every offset of a real corpus asserting nothing throws. Override the corpus
+# with WISDOM_SCANNER_CORPUS=path1:path2.
+-cp src
+--main ScannerCheck
+--interp
+
+--next
+
+# Checks the offline half of completion end to end through the LSP server.
+# Needs -lib wisdom for the HTML/SVG element and attribute tables.
+-cp src
+-lib wisdom
+--main CompletionCheck
+--interp

@@ -1,6 +1,6 @@
 {
 	"name": "haxe-wisdom",
-	"version": "0.1.5",
+	"version": "0.3.0",
 	"publisher": "jeremyfa",
 	"author": {
 		"name": "Jérémy Faivre"
@@ -24,6 +24,7 @@
 	"bugs": {
 		"url": "https://github.com/jeremyfa/vscode-haxe-wisdom/issues"
 	},
+	"main": "./vscode-wisdom",
 	"homepage": "https://github.com/jeremyfa/vscode-haxe-wisdom",
 	"icon": "images/haxe-logo.png",
 	"galleryBanner": {
@@ -31,10 +32,14 @@
 		"color": "#A84B38"
 	},
 	"engines": {
-		"vscode": "^1.9.0"
+		"vscode": "^1.75.0"
 	},
 	"categories": [
 		"Other"
+	],
+	"activationEvents": [
+		"workspaceContains:**/*.hx",
+		"onLanguage:haxe"
 	],
 	"contributes": {
 		"grammars": [
@@ -53,7 +58,156 @@
 					"tag.closed.hx": "other"
 				}
 			}
+		],
+		"configuration": {
+			"title": "Haxe Wisdom",
+			"properties": {
+				"wisdom.enableTypedFeatures": {
+					"type": "boolean",
+					"default": true,
+					"scope": "resource",
+					"markdownDescription": "Master switch for everything that needs the Haxe compiler (component completion, hover, go to definition, `@props` completion). When off, only the offline features remain: HTML/SVG tag and attribute names, Wisdom control-flow snippets and closing tags. No Haxe process is ever started."
+				},
+				"wisdom.htmlBackend": {
+					"type": "string",
+					"enum": [
+						"auto",
+						"on",
+						"off"
+					],
+					"default": "auto",
+					"scope": "resource",
+					"markdownEnumDescriptions": [
+						"Offer HTML/SVG tags, attributes, values and their documentation only when `-D wisdom_html` is found in the resolved Haxe configuration: in the arguments themselves or in any HXML file they include. Nothing found means off.",
+						"Always offer HTML/SVG tags and attributes.",
+						"Never offer HTML/SVG tags and attributes. Wisdom control tags and Wisdom attributes remain."
+					],
+					"markdownDescription": "Whether the markup targets Wisdom's HTML backend. Wisdom control-flow tags and Wisdom attributes are available regardless."
+				},
+				"wisdom.tailwind": {
+					"type": "string",
+					"enum": [
+						"auto",
+						"on",
+						"off"
+					],
+					"default": "auto",
+					"scope": "resource",
+					"markdownEnumDescriptions": [
+						"Offer to set up Tailwind CSS IntelliSense for Wisdom markup when `-D wisdom_tailwind` is found in the resolved Haxe configuration (in the arguments themselves or in any HXML file they include).",
+						"Always treat the project as using Tailwind.",
+						"Never prompt about Tailwind."
+					],
+					"markdownDescription": "Whether this project styles its Wisdom markup with Tailwind CSS. When it does, Wisdom offers to install and configure the official Tailwind CSS IntelliSense extension so that class completion and hover work inside `class=\"...\"` and `class=${'...'}`. Nothing is written to your settings without confirmation; `Wisdom: Configure Tailwind IntelliSense` does it on demand."
+				},
+				"wisdom.displayArguments": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": [],
+					"scope": "resource",
+					"markdownDescription": "Compiler arguments for Wisdom's own Haxe completion server, e.g. `[\"build.hxml\"]`. Takes precedence over everything else. Set this when your project feeds vshaxe through a third-party provider (Lime, OpenFL, Ceramic), since the arguments such a provider uses cannot be read from outside vshaxe."
+				},
+				"wisdom.hxmlFile": {
+					"type": "string",
+					"default": "",
+					"scope": "resource",
+					"markdownDescription": "HXML file to use for Wisdom's Haxe completion server, relative to the workspace root. A shorthand for a single-entry `#wisdom.displayArguments#`."
+				},
+				"wisdom.haxeExecutable": {
+					"type": "string",
+					"default": "",
+					"scope": "resource",
+					"markdownDescription": "Haxe executable for Wisdom's completion server. Leave empty to reuse vshaxe's resolved `#haxe.executable#`."
+				},
+				"wisdom.haxeDisplayServer.enable": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Allow Wisdom to run its own Haxe completion server. Kept separate from `#wisdom.enableTypedFeatures#` so a different backend can be selected later."
+				},
+				"wisdom.haxeDisplayServer.idleShutdown": {
+					"type": "number",
+					"default": 300,
+					"markdownDescription": "Shut the Haxe completion server down after this many seconds without a request. `0` keeps it running. It restarts on demand."
+				},
+				"wisdom.haxeDisplayServer.requestTimeout": {
+					"type": "number",
+					"default": 10,
+					"markdownDescription": "Give up on a Haxe request after this many seconds of silence and restart the server. This is an inactivity timeout, not a wall-clock one, so a genuinely slow compilation is not killed."
+				},
+				"wisdom.haxeDisplayServer.buildCompletionCache": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Compile the project once when the Haxe completion server starts. Makes every later request much faster, at the cost of a slower first one."
+				},
+				"wisdom.maxCompletionItems": {
+					"type": "number",
+					"default": 1000,
+					"markdownDescription": "Upper bound on the number of items requested from the Haxe compiler."
+				},
+				"wisdom.exclude": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": [
+						"haxe.macro"
+					],
+					"markdownDescription": "Packages excluded from completion results."
+				},
+				"wisdom.hover.enable": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Show Wisdom hovers on tag names and attributes. VSCode stacks hovers from every extension and there is no way to suppress vshaxe's, so turn this off if you would rather see only its answer."
+				},
+				"wisdom.definition.enable": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Enable go to definition (and ctrl/cmd+click) on component tag names."
+				},
+				"wisdom.trace.haxeServer": {
+					"type": "string",
+					"enum": [
+						"off",
+						"messages",
+						"verbose"
+					],
+					"default": "off",
+					"markdownDescription": "Log traffic with the Haxe completion server to the Wisdom output channel."
+				}
+			}
+		},
+		"commands": [
+			{
+				"command": "wisdom.restartHaxeServer",
+				"title": "Restart Haxe Completion Server",
+				"category": "Wisdom"
+			},
+			{
+				"command": "wisdom.selectConfiguration",
+				"title": "Select Haxe Configuration",
+				"category": "Wisdom"
+			},
+			{
+				"command": "wisdom.showOutput",
+				"title": "Show Output Channel",
+				"category": "Wisdom"
+			},
+			{
+				"command": "wisdom.configureTailwind",
+				"title": "Configure Tailwind IntelliSense",
+				"category": "Wisdom"
+			}
 		]
 	},
-	"dependencies": {}
+	"scripts": {
+		"update-web-data": "node scripts/update-web-data.mjs",
+		"check-web-data": "node scripts/update-web-data.mjs --check",
+		"check-tailwind-regex": "node scripts/tailwind-regex-check.mjs"
+	},
+	"dependencies": {
+		"vscode-languageclient": "^8.1.0",
+		"vscode-languageserver": "^9.0.1"
+	}
 }
